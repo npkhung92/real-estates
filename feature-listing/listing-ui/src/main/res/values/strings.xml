@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- List screen -->
+    <string name="real_estate_list_screen_title">Real estate list</string>
+
+    <!-- Generic string resources -->
+    <string name="generic_error_msg">Something went wrong</string>
+</resources>
