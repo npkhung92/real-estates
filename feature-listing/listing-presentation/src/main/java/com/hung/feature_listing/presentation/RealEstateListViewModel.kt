@@ -20,8 +20,9 @@ class RealEstateListViewModel @Inject constructor(
     private val refreshRealEstatesUseCase: RefreshRealEstatesUseCase,
     private val bookmarkRealEstateUseCase: BookmarkRealEstateUseCase,
 ) : BaseViewModel<RealEstateListPresentationState>(RealEstateListPresentationState()) {
-    /** Guards the one-time initial refresh triggered from [onEnter]. */
+    // Guards the one-time initial refresh triggered
     private val isInitialLoadTriggered = AtomicBoolean(false)
+
     override fun onEnter() {
         retrieveRealEstates()
         if (isInitialLoadTriggered.compareAndSet(false, true)) {
@@ -53,10 +54,14 @@ class RealEstateListViewModel @Inject constructor(
                 updateState { it.copy(loadingState = RealEstateListLoadingState.Idle) }
             },
             onSuccess = {
+                println("hungnpk> success refresh")
                 updateState { it.copy(loadingState = RealEstateListLoadingState.Idle) }
             },
             onStart = {
-                updateState { it.copy(loadingState = if (isInitialLoading) RealEstateListLoadingState.Loading else RealEstateListLoadingState.Refreshing) }
+                val state =
+                    if (isInitialLoading) RealEstateListLoadingState.Loading else RealEstateListLoadingState.Refreshing
+                println("hungnpk> start refresh, $state")
+                updateState { it.copy(loadingState = state) }
             },
             request = Unit,
             useCaseBlock = refreshRealEstatesUseCase
