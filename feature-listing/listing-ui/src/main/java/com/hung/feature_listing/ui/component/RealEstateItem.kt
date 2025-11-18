@@ -2,12 +2,13 @@ package com.hung.feature_listing.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
@@ -17,10 +18,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,7 +31,10 @@ import androidx.compose.ui.unit.dp
 import com.hung.core.ui.component.AsyncImage
 import com.hung.core.ui.component.ShimmerBackground
 import com.hung.core.ui.theme.MainApplicationTheme
+import com.hung.feature_listing.presentation.model.PricePresentationModel
 import com.hung.feature_listing.presentation.model.RealEstatePresentationModel
+import com.hung.feature_listing.ui.R
+import com.hung.feature_listing.ui.formatter.PriceFormatter
 
 @Composable
 internal fun RealEstateItem(
@@ -40,6 +46,13 @@ internal fun RealEstateItem(
     if (realEstate == null) {
         LoadingSkeletonItem(modifier = itemModifier)
         return
+    }
+    val context = LocalContext.current
+    val priceFormatter = remember { PriceFormatter() }
+    val realEstatePrice = remember(realEstate.price) {
+        (realEstate.price as? PricePresentationModel.Available)?.let { (price, currency) ->
+            priceFormatter.format(price, currency)
+        } ?: context.getString(R.string.real_estate_unavailable_field)
     }
     Card(
         modifier = itemModifier,
@@ -57,7 +70,7 @@ internal fun RealEstateItem(
                 .fillMaxWidth()
                 .weight(1f),
             imageUrl = realEstate.firstImageUrl,
-            price = realEstate.price,
+            price = realEstatePrice,
             isBookmarked = realEstate.bookmarked,
             onBookmarkCheck = onBookmarkCheck
         )
@@ -68,7 +81,7 @@ internal fun RealEstateItem(
             text = realEstate.title,
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            maxLines = 1,
+            maxLines = 2,
             overflow = TextOverflow.Ellipsis
         )
         Row(
@@ -95,6 +108,7 @@ internal fun RealEstateItem(
     }
 }
 
+@Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
 @Composable
 private fun RealEstateImage(
     imageUrl: String,
@@ -103,7 +117,8 @@ private fun RealEstateImage(
     modifier: Modifier = Modifier,
     onBookmarkCheck: (Boolean) -> Unit
 ) {
-    Box(modifier = modifier) {
+    BoxWithConstraints(modifier = modifier) {
+        val boxWithConstraintsScope = this
         AsyncImage(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillWidth,
@@ -112,14 +127,16 @@ private fun RealEstateImage(
         )
         Text(
             modifier = Modifier
+                .widthIn(max = boxWithConstraintsScope.maxWidth * 0.8f)
                 .align(Alignment.BottomStart)
-                .padding(bottom = 24.dp)
                 .background(
-                    shape = RoundedCornerShape(topEnd = 12.dp, bottomEnd = 12.dp),
+                    shape = RoundedCornerShape(topEnd = 12.dp),
                     color = MaterialTheme.colorScheme.tertiaryContainer
                 )
                 .padding(12.dp),
             text = price,
+            overflow = TextOverflow.Ellipsis,
+            maxLines = 1,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.ExtraBold,
             color = MaterialTheme.colorScheme.tertiary,
@@ -127,9 +144,8 @@ private fun RealEstateImage(
         FavoriteButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(bottom = 24.dp)
                 .background(
-                    shape = RoundedCornerShape(topStart = 12.dp, bottomStart = 12.dp),
+                    shape = RoundedCornerShape(topStart = 12.dp),
                     color = MaterialTheme.colorScheme.primaryContainer
                 ),
             isFavorite = isBookmarked,
@@ -152,11 +168,11 @@ private fun PreviewItem() {
         RealEstateItem(
             realEstate = RealEstatePresentationModel(
                 id = "1",
-                title = "asddas",
+                title = "asddas1 2312 3123 12 312 3123 123",
                 firstImageUrl = "",
                 bookmarked = false,
                 address = "asdnaslkdjna, asdkas",
-                price = "12 chf"
+                price = PricePresentationModel.Available(120000200.0, "CHF")
             ),
         )
     }

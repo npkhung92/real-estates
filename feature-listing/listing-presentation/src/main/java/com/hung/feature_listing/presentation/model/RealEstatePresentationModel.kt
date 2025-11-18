@@ -4,7 +4,7 @@ data class RealEstatePresentationModel(
     val id: String,
     val firstImageUrl: String,
     val title: String,
-    val price: String,
+    val price: PricePresentationModel,
     val address: String,
     val bookmarked: Boolean
 )

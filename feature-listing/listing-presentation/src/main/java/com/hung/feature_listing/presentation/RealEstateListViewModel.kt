@@ -28,26 +28,31 @@ class RealEstateListViewModel @Inject constructor(
     private val isInitialLoadTriggered = AtomicBoolean(false)
     override fun onEnter() {
         if (isInitialLoadTriggered.compareAndSet(false, true)) {
-            launchUseCase(
-                onError = { exception ->
-                    sendEvent(DefaultErrorEvent(exception?.message))
-                    updateState { it.copy(loadingState = RealEstateListLoadingState.Idle) }
-                },
-                onSuccess = { pagingData ->
-                    updateState {
-                        it.copy(
-                            loadingState = RealEstateListLoadingState.Idle, pagingRealEstates = pagingData
-                                .map { paging -> paging.map { realEstate -> realEstate.toPresentation() } }
-                                .cachedIn(viewModelScope))
-                    }
-                },
-                onStart = {
-                    updateState { it.copy(loadingState = RealEstateListLoadingState.Loading) }
-                },
-                request = Unit,
-                useCaseBlock = getRealEstatesUseCase
-            )
+            retrieveRealEstates()
+            onRefreshAction()
         }
+    }
+
+    private fun retrieveRealEstates() {
+        launchUseCase(
+            onError = { exception ->
+                sendEvent(DefaultErrorEvent(exception?.message))
+                updateState { it.copy(loadingState = RealEstateListLoadingState.Idle) }
+            },
+            onSuccess = { pagingData ->
+                updateState {
+                    it.copy(
+                        loadingState = RealEstateListLoadingState.Idle, pagingRealEstates = pagingData
+                            .map { paging -> paging.map { realEstate -> realEstate.toPresentation() } }
+                            .cachedIn(viewModelScope))
+                }
+            },
+            onStart = {
+                updateState { it.copy(loadingState = RealEstateListLoadingState.Loading) }
+            },
+            request = Unit,
+            useCaseBlock = getRealEstatesUseCase
+        )
     }
 
     fun onRefreshAction() {
@@ -72,7 +77,15 @@ class RealEstateListViewModel @Inject constructor(
             onError = { exception ->
                 sendEvent(DefaultErrorEvent(exception?.message))
             },
-            onSuccess = {},
+            onSuccess = {
+                sendEvent(
+                    if (marked) {
+                        RealEstateListPresentationEvent.BookmarkedSuccess
+                    } else {
+                        RealEstateListPresentationEvent.RemovedBookmarkSuccess
+                    }
+                )
+            },
             request = BookmarkRequestDomainModel(realEstateId = id, marked = marked),
             useCaseBlock = bookmarkRealEstateUseCase
         )

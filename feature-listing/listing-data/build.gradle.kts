@@ -10,6 +10,7 @@ dependencies {
     implementation(projects.featureListing.listingDomain)
     implementation(projects.core.network)
     implementation(projects.core.coreDomain)
+    implementation(projects.datasource)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.paging.runtime)

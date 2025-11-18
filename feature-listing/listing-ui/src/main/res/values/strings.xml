@@ -3,7 +3,10 @@
 
     <!-- List screen -->
     <string name="real_estate_list_screen_title">Real estate list</string>
+    <string name="real_estate_list_screen_bookmarked_success_msg">Marked favorite property</string>
+    <string name="real_estate_list_screen_removed_bookmark_success_msg">Removed favorite property</string>
 
     <!-- Generic string resources -->
     <string name="generic_error_msg">Something went wrong</string>
+    <string name="real_estate_unavailable_field">N/A</string>
 </resources>

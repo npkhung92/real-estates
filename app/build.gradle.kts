@@ -20,6 +20,8 @@ dependencies {
     implementation(projects.core.coreDomain)
     implementation(projects.core.coreUi)
     implementation(projects.core.network)
+    implementation(projects.datasource)
+    implementation(projects.realEstates.featureListing.listingData)
     implementation(projects.realEstates.featureListing.listingPresentation)
     implementation(projects.realEstates.featureListing.listingDomain)
     implementation(projects.realEstates.featureListing.listingUi)
@@ -29,5 +31,4 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
-    implementation(libs.paging.runtime)
 }

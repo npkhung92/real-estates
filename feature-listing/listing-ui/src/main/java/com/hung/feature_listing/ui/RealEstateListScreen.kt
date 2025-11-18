@@ -42,8 +42,10 @@ import com.hung.core.ui.BaseScreen
 import com.hung.core.ui.EventHandler
 import com.hung.core.ui.theme.MainApplicationTheme
 import com.hung.feature_listing.presentation.RealEstateListLoadingState
+import com.hung.feature_listing.presentation.RealEstateListPresentationEvent
 import com.hung.feature_listing.presentation.RealEstateListPresentationState
 import com.hung.feature_listing.presentation.RealEstateListViewModel
+import com.hung.feature_listing.presentation.model.PricePresentationModel
 import com.hung.feature_listing.presentation.model.RealEstatePresentationModel
 import com.hung.feature_listing.ui.component.LocalSnackbarHostState
 import com.hung.feature_listing.ui.component.RealEstateItem
@@ -62,6 +64,14 @@ internal fun RealEstateListScreen(onNavigationBack: () -> Unit) {
             when (event) {
                 is DefaultErrorEvent -> {
                     scope.launch { snackbarState.showSnackbar(context.getString(R.string.generic_error_msg)) }
+                }
+
+                RealEstateListPresentationEvent.BookmarkedSuccess -> {
+                    scope.launch { snackbarState.showSnackbar(context.getString(R.string.real_estate_list_screen_bookmarked_success_msg)) }
+                }
+
+                RealEstateListPresentationEvent.RemovedBookmarkSuccess -> {
+                    scope.launch { snackbarState.showSnackbar(context.getString(R.string.real_estate_list_screen_removed_bookmark_success_msg)) }
                 }
             }
         }
@@ -211,7 +221,7 @@ private fun PreviewContent() {
                         firstImageUrl = "",
                         bookmarked = false,
                         address = "",
-                        price = "12 chf"
+                        price = PricePresentationModel.Available(10.0, "CHF")
                     )
                 )
             )
