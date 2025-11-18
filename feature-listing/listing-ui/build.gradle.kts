@@ -19,7 +19,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.material.icons.core)
     implementation(libs.navigation.compose)
-    implementation(libs.paging.compose)
 
     testImplementation(libs.junit)
 }

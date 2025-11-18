@@ -13,7 +13,6 @@ dependencies {
     implementation(projects.featureListing.listingDomain)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.paging.runtime)
 
     testImplementation(projects.core.unitTest)
     testImplementation(libs.junit)

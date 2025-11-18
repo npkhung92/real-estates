@@ -31,7 +31,6 @@ appcompat = "1.7.1"
 material = "1.13.0"
 coilCompose = "3.3.0"
 kotlinxCollectionsImmutable = "0.4.0"
-paging = "3.3.6"
 retrofit = "3.0.0"
 kotlinxSerializationJson = "1.9.0"
 okhttp = "5.2.1"
@@ -81,15 +80,9 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 androidx-room-gradle-plugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlin-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofit" }
-paging-runtime = { module = "androidx.paging:paging-runtime", version.ref = "paging" }
-paging-compose = { module = "androidx.paging:paging-compose", version.ref = "paging" }
-paging-common = { module = "androidx.paging:paging-common", version.ref = "paging" }
-room-paging = { module = "androidx.room:room-paging", version.ref = "room" }
 okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 turbine-test = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
-compose-ui-test = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "compose" }
-compose-ui-manifest-test = { group = "androidx.compose.ui", name = "ui-test-manifest", version.ref = "compose"}
 
 
 [plugins]

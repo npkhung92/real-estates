@@ -17,10 +17,6 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
 
-    implementation(libs.paging.runtime)
-    implementation(libs.room.paging)
-    ksp(libs.paging.common)
-
     implementation(libs.retrofit.core)
     implementation(libs.kotlinx.serialization.json)
 }

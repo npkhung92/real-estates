@@ -1,12 +1,12 @@
 package com.hung.real_estates.datasource.local.dao
 
-import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.hung.real_estates.datasource.local.entity.RealEstateEntity
 import com.hung.real_estates.datasource.local.model.RealEstateLocalModel
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RealEstateDao {
@@ -18,7 +18,7 @@ interface RealEstateDao {
         ORDER BY id ASC
     """
     )
-    fun getRealEstates(): PagingSource<Int, RealEstateLocalModel>
+    fun getRealEstates(): Flow<List<RealEstateLocalModel>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(realEstates: List<RealEstateEntity>)

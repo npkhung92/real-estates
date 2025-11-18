@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,10 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
-import androidx.paging.compose.itemKey
 import com.hung.core.presentation.DefaultErrorEvent
 import com.hung.core.ui.BaseScreen
 import com.hung.core.ui.EventHandler
@@ -49,7 +46,9 @@ import com.hung.feature_listing.presentation.model.PricePresentationModel
 import com.hung.feature_listing.presentation.model.RealEstatePresentationModel
 import com.hung.feature_listing.ui.component.LocalSnackbarHostState
 import com.hung.feature_listing.ui.component.RealEstateItem
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
 
 private const val SKELETON_ITEM_COUNT = 4
@@ -91,10 +90,8 @@ internal fun RealEstateListScreen(onNavigationBack: () -> Unit) {
             }
         }
         ScreenContent { state ->
-            val realEstateList: LazyPagingItems<RealEstatePresentationModel> =
-                state.pagingRealEstates.collectAsLazyPagingItems()
             Content(
-                realEstates = realEstateList,
+                realEstates = state.realEstates.toImmutableList(),
                 loadingState = state.loadingState,
                 onAction = onAction
             )
@@ -104,7 +101,7 @@ internal fun RealEstateListScreen(onNavigationBack: () -> Unit) {
 
 @Composable
 private fun Content(
-    realEstates: LazyPagingItems<RealEstatePresentationModel>,
+    realEstates: ImmutableList<RealEstatePresentationModel>,
     modifier: Modifier = Modifier,
     loadingState: RealEstateListLoadingState = RealEstateListLoadingState.Idle,
     onAction: (RealEstateListScreenUiAction) -> Unit,
@@ -153,11 +150,7 @@ private fun Content(
                             )
                         }
                     } else {
-                        items(
-                            realEstates.itemCount,
-                            realEstates.itemKey { it.id }
-                        ) { index ->
-                            val realEstate = realEstates[index] ?: return@items
+                        items(items = realEstates, key = { it.id }) { realEstate ->
                             RealEstateItem(
                                 modifier = Modifier
                                     .fillParentMaxWidth()
@@ -212,22 +205,17 @@ private fun TopBar(
 @Composable
 private fun PreviewContent() {
     MainApplicationTheme {
-        val mock = flowOf(
-            PagingData.from(
-                listOf(
-                    RealEstatePresentationModel(
-                        id = "1",
-                        title = "asddas",
-                        firstImageUrl = "",
-                        bookmarked = false,
-                        address = "",
-                        price = PricePresentationModel.Available(10.0, "CHF")
-                    )
-                )
-            )
-        ).collectAsLazyPagingItems()
         Content(
-            realEstates = mock,
+            realEstates = persistentListOf(
+                RealEstatePresentationModel(
+                    id = "1",
+                    title = "asddas",
+                    firstImageUrl = "",
+                    bookmarked = false,
+                    address = "",
+                    price = PricePresentationModel.Available(10.0, "CHF")
+                )
+            ),
             loadingState = RealEstateListLoadingState.Idle,
             onAction = {},
         )

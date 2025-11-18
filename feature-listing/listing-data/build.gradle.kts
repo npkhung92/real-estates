@@ -13,7 +13,6 @@ dependencies {
     implementation(projects.datasource)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.paging.runtime)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

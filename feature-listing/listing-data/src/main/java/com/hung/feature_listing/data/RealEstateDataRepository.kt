@@ -1,9 +1,5 @@
 package com.hung.feature_listing.data
 
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
-import androidx.paging.map
 import com.hung.core.network.NetworkClient
 import com.hung.core.network.getDataOrDefault
 import com.hung.core.network.getDataOrThrow
@@ -18,11 +14,8 @@ import com.hung.real_estates.datasource.local.entity.BookmarkRealEstateEntity
 import com.hung.real_estates.datasource.remote.RealEstateApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-
-private const val PAGING_PAGE_LIMIT = 10
 
 class RealEstateDataRepository(
     private val networkClient: NetworkClient,
@@ -31,14 +24,8 @@ class RealEstateDataRepository(
     private val bookmarkRealEstateDao: BookmarkRealEstateDao,
 ) : RealEstateRepository {
 
-    override suspend fun getRealEstates(): Flow<PagingData<RealEstateDomainModel>> = Pager(
-        config = PagingConfig(pageSize = PAGING_PAGE_LIMIT),
-        pagingSourceFactory = { realEstateDao.getRealEstates() }
-    ).flow.map { pagingData ->
-        pagingData.map {
-            it.toDomain()
-        }
-    }.flowOn(Dispatchers.Default)
+    override suspend fun getRealEstates(): Flow<List<RealEstateDomainModel>> =
+        realEstateDao.getRealEstates().map { localModels -> localModels.map { it.toDomain() } }
 
     override suspend fun refreshRealEstates() = withContext(Dispatchers.IO) {
         val properties = networkClient.executeWithRetry(retryCount = 2) {

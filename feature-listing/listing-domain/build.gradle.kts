@@ -10,5 +10,4 @@ dependencies {
     implementation(projects.core.coreDomain)
 
     implementation(libs.androidx.core.ktx)
-    implementation(libs.paging.runtime)
 }
